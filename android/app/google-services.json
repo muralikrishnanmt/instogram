@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "215066121219",
+    "project_id": "instogram-36195",
+    "storage_bucket": "instogram-36195.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:215066121219:android:91e1905e225c37a624ea36",
+        "android_client_info": {
+          "package_name": "com.example.instogram"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "215066121219-jsulis5d0o4sqb780u26pdl1lpqfea5r.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCxBU7HIno93tCy3wvGv2JbNT1gVZIgIXU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "215066121219-jsulis5d0o4sqb780u26pdl1lpqfea5r.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
