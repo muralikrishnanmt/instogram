@@ -8,7 +8,7 @@ class WebScreenLayout extends StatelessWidget {
     return const Scaffold(
       body: Center(
         child: Text(
-          'This is Web',
+          'This is Web.',
         ),
       ),
     );
