@@ -38,7 +38,7 @@ class PostCard extends StatelessWidget {
                       children: [
                         Text(
                           snap['username'],
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
