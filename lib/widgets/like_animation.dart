@@ -22,7 +22,6 @@ class LikeAnimation extends StatefulWidget {
 class _LikeAnimationState extends State<LikeAnimation>
     with SingleTickerProviderStateMixin {
   late AnimationController controller;
-
   late Animation<double> scale;
 
   @override
@@ -54,7 +53,6 @@ class _LikeAnimationState extends State<LikeAnimation>
           milliseconds: 200,
         ),
       );
-
       if (widget.onEnd != null) {
         widget.onEnd!();
       }
@@ -63,8 +61,8 @@ class _LikeAnimationState extends State<LikeAnimation>
 
   @override
   void dispose() {
-    controller.dispose();
     super.dispose();
+    controller.dispose();
   }
 
   @override

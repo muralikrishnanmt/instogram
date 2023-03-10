@@ -1,8 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:instogram/models/user.dart';
 import 'package:instogram/providers/user_provider.dart';
 import 'package:instogram/resources/firestore_methods.dart';
+import 'package:instogram/screens/comments_screen.dart';
 import 'package:instogram/utils/colors.dart';
+import 'package:instogram/utils/utils.dart';
 import 'package:instogram/widgets/like_animation.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -17,6 +20,29 @@ class PostCard extends StatefulWidget {
 
 class _PostCardState extends State<PostCard> {
   bool isLikeAnimating = false;
+  int commentLen = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    getComments();
+  }
+
+  void getComments() async {
+    try {
+      QuerySnapshot snap = await FirebaseFirestore.instance
+          .collection('posts')
+          .doc(widget.snap['postId'])
+          .collection('comments')
+          .get();
+
+      commentLen = snap.docs.length;
+    } catch (e) {
+      showSnackBar(e.toString(), context);
+    }
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     final User user = Provider.of<UserProvider>(context).getUser;
@@ -98,7 +124,7 @@ class _PostCardState extends State<PostCard> {
           //IMAGE SECTION
           GestureDetector(
             onDoubleTap: () async {
-              await FirestoreMethods().likePost(
+              FirestoreMethods().likePost(
                 widget.snap['postId'],
                 user.uid,
                 widget.snap['likes'],
@@ -119,9 +145,7 @@ class _PostCardState extends State<PostCard> {
                   ),
                 ),
                 AnimatedOpacity(
-                  duration: const Duration(
-                    milliseconds: 200,
-                  ),
+                  duration: const Duration(milliseconds: 200),
                   opacity: isLikeAnimating ? 1 : 0,
                   child: LikeAnimation(
                     isAnimating: isLikeAnimating,
@@ -139,7 +163,7 @@ class _PostCardState extends State<PostCard> {
                       size: 120,
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -152,20 +176,29 @@ class _PostCardState extends State<PostCard> {
                 smallLike: true,
                 child: IconButton(
                   onPressed: () async {
-                    await FirestoreMethods().likePost(
+                    FirestoreMethods().likePost(
                       widget.snap['postId'],
                       user.uid,
                       widget.snap['likes'],
                     );
                   },
-                  icon: const Icon(
-                    Icons.favorite,
-                    color: Colors.red,
-                  ),
+                  icon: widget.snap['likes'].contains(user.uid)
+                      ? const Icon(
+                          Icons.favorite,
+                          color: Colors.red,
+                        )
+                      : const Icon(
+                          Icons.favorite_border,
+                          color: Colors.red,
+                        ),
                 ),
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => CommentsScreen(snap: widget.snap),
+                  ),
+                ),
                 icon: const Icon(
                   Icons.comment_outlined,
                 ),
@@ -198,12 +231,12 @@ class _PostCardState extends State<PostCard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 DefaultTextStyle(
-                  style: Theme.of(context).textTheme.subtitle2!.copyWith(
+                  style: Theme.of(context).textTheme.titleSmall!.copyWith(
                         fontWeight: FontWeight.w800,
                       ),
                   child: Text(
                     '${widget.snap['likes'].length} likes',
-                    style: Theme.of(context).textTheme.bodyText2,
+                    style: Theme.of(context).textTheme.bodyMedium,
                   ),
                 ),
                 Container(
@@ -213,13 +246,13 @@ class _PostCardState extends State<PostCard> {
                   ),
                   child: RichText(
                     text: TextSpan(
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: primaryColor,
                       ),
                       children: [
                         TextSpan(
                           text: widget.snap['username'],
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                           ),
                         ),
@@ -236,8 +269,8 @@ class _PostCardState extends State<PostCard> {
                     padding: const EdgeInsets.symmetric(
                       vertical: 4,
                     ),
-                    child: const Text(
-                      'View all 200 comments',
+                    child: Text(
+                      'View all $commentLen comments',
                       style: TextStyle(
                         fontSize: 16,
                         color: secondaryColor,
@@ -253,7 +286,7 @@ class _PostCardState extends State<PostCard> {
                     DateFormat.yMMMd().format(
                       widget.snap['datePublished'].toDate(),
                     ),
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 16,
                       color: secondaryColor,
                     ),
