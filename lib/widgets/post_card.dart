@@ -275,7 +275,7 @@ class _PostCardState extends State<PostCard> {
                     ),
                     child: Text(
                       'View all $commentLen comments',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 16,
                         color: secondaryColor,
                       ),
