@@ -67,8 +67,8 @@ class _SearchScreenState extends State<SearchScreen> {
                       child: ListTile(
                         leading: CircleAvatar(
                           backgroundImage: NetworkImage(
-                              (snapshot.data! as dynamic).docs[index]
-                                  ['photoUrl']),
+                            (snapshot.data! as dynamic).docs[index]['photoUrl'],
+                          ),
                         ),
                         title: Text(
                           (snapshot.data! as dynamic).docs[index]['username'],
@@ -91,7 +91,9 @@ class _SearchScreenState extends State<SearchScreen> {
                   crossAxisCount: 3,
                   itemCount: (snapshot.data! as dynamic).docs.length,
                   itemBuilder: (context, index) => Image.network(
-                      (snapshot.data! as dynamic).docs[index]['postUrl']),
+                    (snapshot.data! as dynamic).docs[index]['postUrl'],
+                    fit: BoxFit.cover,
+                  ),
                   staggeredTileBuilder: (index) => StaggeredTile.count(
                     (index % 7 == 0) ? 2 : 1,
                     (index % 7 == 0) ? 2 : 1,

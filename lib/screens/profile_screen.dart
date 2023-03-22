@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:instogram/resources/firestore_methods.dart';
 import 'package:instogram/utils/colors.dart';
 import 'package:instogram/utils/utils.dart';
 import 'package:instogram/widgets/follow_button.dart';
@@ -123,14 +124,35 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                                 backgroundColor: Colors.white,
                                                 textColor: Colors.black,
                                                 borderColor: Colors.grey,
-                                                function: () {},
+                                                function: () async {
+                                                  await FirestoreMethods()
+                                                      .followUser(
+                                                          FirebaseAuth.instance
+                                                              .currentUser!.uid,
+                                                          userData['uid']);
+                                                  setState(() {
+                                                    isFollowing = false;
+                                                    followers--;
+                                                  });
+                                                },
                                               )
                                             : FollowButton(
                                                 text: 'Follow',
                                                 backgroundColor: Colors.blue,
                                                 textColor: Colors.white,
                                                 borderColor: Colors.blue,
-                                                function: () {},
+                                                function: () async {
+                                                  await FirestoreMethods()
+                                                      .followUser(
+                                                          FirebaseAuth.instance
+                                                              .currentUser!.uid,
+                                                          userData['uid']);
+
+                                                  setState(() {
+                                                    isFollowing = true;
+                                                    followers++;
+                                                  });
+                                                },
                                               ),
                                   ],
                                 ),
@@ -171,26 +193,25 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       .get(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(
+                      return const Center(
                         child: CircularProgressIndicator(),
                       );
                     }
                     return GridView.builder(
                       shrinkWrap: true,
                       itemCount: (snapshot.data! as dynamic).docs.length,
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          crossAxisSpacing: 5,
-                          mainAxisSpacing: 1.5,
-                          childAspectRatio: 1),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 3,
+                              crossAxisSpacing: 5,
+                              mainAxisSpacing: 1.5,
+                              childAspectRatio: 1),
                       itemBuilder: (context, index) {
                         DocumentSnapshot snap =
                             (snapshot.data! as dynamic).docs[index];
-                        return Container(
-                          child: Image(
-                            image: NetworkImage(snap['postUrl']),
-                            fit: BoxFit.cover,
-                          ),
+                        return Image(
+                          image: NetworkImage(snap['postUrl']),
+                          fit: BoxFit.cover,
                         );
                       },
                     );
